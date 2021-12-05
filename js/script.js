@@ -1,25 +1,37 @@
-var turn = true;
+$(document).ready(function() {
+var turn = false;
 var spielfeld = [
-    ['', '', ''], //0,0 1,1 2,2
-    ['', '', ''], //0,2 1,1 0,2 
+    ['', '', ''], 
+    ['', '', ''], 
     ['', '', ''],
 ];
-
-
-// horizontale Ermittlung
-// diagonale Ermittlung
+var scoreX = parseInt($(".x").html());
+var scoreO = parseInt($(".o").html());
 
 $(document).on('click', '.th-click', function () {
-    spielerInHtmlSetzen($(this));
+    setPlayer($(this));
     spieler = $(this).text();
     feldId = $(this).attr('id');
-    fillArrayWithPlayerValues(spieler, feldId);
-    werIstGewinner(spieler, feldId);
+    fillArrayWithPlayerValue(spieler, feldId);
+    werIstGewinner();
 });
 
-function fillArrayWithPlayerValues(inhalt, index) { //1 -> 00 //2 -> 01 // 3 -> 02 //      4 -> 10 // 5 -> 11 // 6- > 12 
-    console.log("halooooooo",inhalt,index);
+
+
+function newGame(){
+    console.log("Neues Spiel");
+    turn = true;
+    spielfeld = [
+        ['', '', ''], 
+        ['', '', ''], 
+        ['', '', '']];
+    $('.th-click').html('');
+}
+
+function fillArrayWithPlayerValue(inhalt, index) { //1 -> 00 //2 -> 01 // 3 -> 02 //      4 -> 10 // 5 -> 11 // 6- > 12 
     //reihe 0
+    console.log(inhalt);
+    console.log(index);
     if(index<3){
         spielfeld[0][index]=inhalt;
     }
@@ -35,54 +47,89 @@ function fillArrayWithPlayerValues(inhalt, index) { //1 -> 00 //2 -> 01 // 3 -> 
     }
 }
 
-function spielerInHtmlSetzen(feld) {
-    if (turn == true) {
-        turn = false;
+function setPlayer(feld) {
+    console.log("Spieler gewechselt");
+    if (turn) {
         console.log(turn);
-        feld.html('x');
-    } else if (turn == false) {
-        turn = true;
+        feld.html('X');
+    } else{
         console.log(turn);
-        feld.html('o');
+        feld.html('O');    
     }
+   changePlayer();  
 }
 
+function changePlayer(){
+    
+    turn=!turn; 
+    console.log("changePlayer()" +turn);
+}
 
+// vertikale Ermittlung
 function testVertical() {
+    console.log("mein name ist testVertikal()");
     for (var index = 0; index < spielfeld.length; index++) {
-        if (spielfeld[0][index] == 'x' && spielfeld[1][index] == 'x' && spielfeld[2][index] == 'x') {
+        if (spielfeld[0][index] == 'X' && spielfeld[1][index] == 'X' && spielfeld[2][index] == 'X') {
+            spielstand('x');
             console.log("Gewinner Vertical X");
-        } else if (spielfeld[0][index] == 'o' && spielfeld[1][index] == 'o' && spielfeld[2][index] == 'o') {
+        } else if (spielfeld[0][index] == 'O' && spielfeld[1][index] == 'O' && spielfeld[2][index] == 'O') {
+            spielstand('o');
             console.log("Gewinner Vertical O");
         }
     }
 }
-
+// horizontale Ermittlung
 function testHorizontal() {
+    console.log("mein name ist testHorizontal()");
     for (var index = 0; index < spielfeld.length; index++) {
-        if (spielfeld[index][0] == 'x' && spielfeld[index][1] == 'x' && spielfeld[index][2] == 'x') {
+        if (spielfeld[index][0] == 'X' && spielfeld[index][1] == 'X' && spielfeld[index][2] == 'X') {
+            spielstand('x');
             console.log("Gewinner Horizontal X");
-        } else if (spielfeld[index][0] == 'o' && spielfeld[index][1] == 'o' && spielfeld[index][2] == 'o') {
+        } else if (spielfeld[index][0] == 'O' && spielfeld[index][1] == 'O' && spielfeld[index][2] == 'O') {
+            spielstand('o');
             console.log("Gewinner Horizontal O");
         }
     }
 }
-
+// diagonale Ermittlung
 function testDiagonal() {
-    if (spielfeld[0][0] == 'x' && spielfeld[1][1] == 'x' && spielfeld[2][2] == 'x') {
+    console.log("mein name ist testDiagonal()");
+    if (spielfeld[0][0] == 'X' && spielfeld[1][1] == 'X' && spielfeld[2][2] == 'X') {
+        spielstand('x');
         console.log("Gewinner dia X");
-    } else if (spielfeld[2][0] == 'x' && spielfeld[1][1] == 'x' && spielfeld[0][2] == 'x') {
+    } else if (spielfeld[2][0] == 'X' && spielfeld[1][1] == 'X' && spielfeld[0][2] == 'X') {
+        spielstand('x');
         console.log("Gewinner dia X");
-    } else if (spielfeld[0][0] == 'o' && spielfeld[1][1] == 'o' && spielfeld[2][2] == 'o') {
+    } else if (spielfeld[0][0] == 'O' && spielfeld[1][1] == 'O' && spielfeld[2][2] == 'O') {
+        spielstand('o');
         console.log("Gewinner dia O");
-    } else if (spielfeld[2][0] == 'o' && spielfeld[1][1] == 'o' && spielfeld[0][2] == 'o') {
+    } else if (spielfeld[2][0] == 'O' && spielfeld[1][1] == 'O' && spielfeld[0][2] == 'O') {
+        spielstand('o');
         console.log("Gewinner dia O");
     }
 }
 
 
-function werIstGewinner(spieler, feldId) {
+function werIstGewinner() {
+    console.log("mein name ist wer ist gewinner");
     testHorizontal();
     testVertical();
     testDiagonal();
 }
+
+function spielstand(gewinner){
+    console.log(gewinner);
+    if (gewinner == 'x'){
+        scoreX++;
+        console.log(scoreX);
+        $('.x').text(scoreX);
+        alert("Spieler X hat gewonnen");
+    }else if(gewinner == 'o'){
+        scoreO++;
+        console.log(scoreO);
+        $('.o').html(scoreO);
+        alert("Spieler O hat gewonnen");
+    }
+    newGame();
+}
+});
